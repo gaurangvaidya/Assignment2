@@ -1,0 +1,21 @@
+trigger TaskComplete on Task (after update,after insert) {
+    
+    List<Account> accountsToBeUpdated = new List<Account>();
+    for(Task t : trigger.new)
+    {
+        if(t.Status=='Completed')
+        {
+       			Integer nCompletedTasks  = [SELECT Count() FROM Task WHERE Status='Completed' and WhatId=:t.WhatId];
+            	
+            	Account acc = [SELECT CompletedTasks__c FROM Account WHERE Id=:t.WhatId];
+            	acc.CompletedTasks__c = nCompletedTasks;
+            	accountsToBeUpdated.add(acc);
+            	
+            	
+            	
+            	
+        }
+    }
+    update accountsToBeUpdated;
+
+}
